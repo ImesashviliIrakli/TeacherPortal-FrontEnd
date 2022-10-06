@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using TeacherPortal_FrontEnd.Models;
+using TeacherPortal_FrontEnd.Models.GradesModels;
 using TeacherPortal_FrontEnd.Models.Teacher;
 
 namespace TeacherPortal_FrontEnd.Repositories.TeacherRepo
@@ -20,6 +22,16 @@ namespace TeacherPortal_FrontEnd.Repositories.TeacherRepo
             var studentJson = await response.Content.ReadAsStringAsync();
             var students = JsonConvert.DeserializeObject<Teacher>(studentJson);
             return students;
+        }
+        #endregion
+
+        #region Get students with grades
+        public async Task<List<Grades>> GetStudentsWithGrades(string subjectName)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:44310/api/Teacher/get-student-grades/{subjectName}");
+            var gradesJson = await response.Content.ReadAsStringAsync();
+            var grades = JsonConvert.DeserializeObject<List<Grades>>(gradesJson);
+            return grades;
         }
         #endregion
     }

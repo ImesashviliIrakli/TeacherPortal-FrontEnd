@@ -1,0 +1,31 @@
+﻿@using TeacherPortal_FrontEnd.Models.GradesModels
+@model List<Grades>
+
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="table-danger">Full name</th>
+                <th class="table-secondary">Grade one</th>
+                <th class="table-secondary">Grade two</th>
+                <th class="table-secondary">Grade three</th>
+                <th class="table-secondary">Grade four</th>
+                <th class="table-secondary">Grade five</th>
+                <th class="table-dark">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var grade in Model){
+                <tr>
+                    <th class="table-danger">@grade.StudentFirstName @grade.StudentLastName</th>
+                    <th>@grade.GradeOne</th>
+                    <th>@grade.GradeTwo</th>
+                    <th>@grade.GradeThree</th>
+                    <th>@grade.GradeFour</th>
+                    <th>@grade.GradeFive</th>
+                    <th class="table-dark">@grade.AvgGrade</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
