@@ -1,8 +1,10 @@
 ﻿@using TeacherPortal_FrontEnd.Models.GradesModels
 @model List<Grades>
 
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <div class="container">
-    <table class="table">
+    <table id="Grades-Table" class="table">
         <thead>
             <tr>
                 <th class="table-danger">Full name</th>
@@ -15,8 +17,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var grade in Model){
-                <tr>
+            @foreach (var grade in Model)
+            {
+                <tr class="table-row" data-id="@grade.Id">
                     <th class="table-danger">@grade.StudentFirstName @grade.StudentLastName</th>
                     <th>@grade.GradeOne</th>
                     <th>@grade.GradeTwo</th>
@@ -29,3 +32,14 @@
         </tbody>
     </table>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#Grades-Table').on("click", ".table-row", function (event) {
+            event.preventDefault();
+            var id = $(this).data("id");
+            document.location = '@Url.Action("Details","Teacher")' + '/' + id;
+        });
+    });
+</script>

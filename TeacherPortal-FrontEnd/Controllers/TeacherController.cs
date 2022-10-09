@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using TeacherPortal_FrontEnd.Models.Account;
@@ -6,6 +7,7 @@ using TeacherPortal_FrontEnd.Repositories.TeacherRepo;
 
 namespace TeacherPortal_FrontEnd.Controllers
 {
+    [Authorize]
     public class TeacherController : Controller
     {
         #region Injection
@@ -25,5 +27,13 @@ namespace TeacherPortal_FrontEnd.Controllers
             var grades = await _teachers.GetStudentsWithGrades(user.SubjectName);
             return View(grades);
         }
+
+        #region Details page 
+        public async Task<IActionResult> Details(int id)
+        {
+            var grade = await _teachers.GetOneStudentGrades(id);
+            return View(grade);
+        }
+        #endregion
     }
 }

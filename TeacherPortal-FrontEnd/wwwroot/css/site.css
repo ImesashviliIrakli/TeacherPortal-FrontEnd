@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.grade {
+    border: 1px solid #f8d7da;
+    padding-top: 5px;
+    background-color: #f8d7da;
+    display: flex;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.grade-window{
+    margin-top: 10px;
+}

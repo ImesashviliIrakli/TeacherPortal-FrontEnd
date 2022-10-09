@@ -1,0 +1,43 @@
+﻿@using TeacherPortal_FrontEnd.Models.GradesModels
+@model Grades
+
+<div class="container">
+    <h3>@Model.StudentFirstName @Model.StudentLastName</h3>
+
+    <div class="grades-container">
+        <div class="row grade-window">
+            <div class="grade col-2">Grade one</div>
+            <div class="col-2">
+                <input class="form-control" value="@Model.GradeOne" />
+            </div>
+        </div>
+
+        <div class="row grade-window">
+            <div class="grade col-2">Grade two</div>
+            <div class="col-2">
+                <input class="form-control" value="@Model.GradeTwo" />
+            </div>
+        </div>
+
+        <div class="row grade-window">
+            <div class="grade col-2">Grade three</div>
+            <div class="col-2">
+                <input class="form-control" value="@Model.GradeThree" />
+            </div>
+        </div>
+
+        <div class="row grade-window">
+            <div class="grade col-2">Grade four</div>
+            <div class="col-2">
+                <input class="form-control" value="@Model.GradeFour" />
+            </div>
+        </div>
+
+        <div class="row grade-window">
+            <div class="grade col-2">Grade five</div>
+            <div class="col-2">
+                <input class="form-control" value="@Model.GradeFive" />
+            </div>
+        </div>
+    </div>
+</div>

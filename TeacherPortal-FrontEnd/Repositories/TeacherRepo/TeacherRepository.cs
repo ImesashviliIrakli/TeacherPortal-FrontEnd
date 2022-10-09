@@ -34,5 +34,15 @@ namespace TeacherPortal_FrontEnd.Repositories.TeacherRepo
             return grades;
         }
         #endregion
+
+        #region Get grades for single student
+        public async Task<Grades> GetOneStudentGrades(int gradeId)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:44310/api/Teacher/get-one-student-grades/{gradeId}");
+            var gradeJson = await response.Content.ReadAsStringAsync();
+            var grade = JsonConvert.DeserializeObject<Grades>(gradeJson);
+            return grade;
+        }
+        #endregion
     }
 }
