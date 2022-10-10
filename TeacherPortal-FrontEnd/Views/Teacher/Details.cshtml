@@ -1,43 +1,110 @@
 ﻿@using TeacherPortal_FrontEnd.Models.GradesModels
 @model Grades
 
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <div class="container">
     <h3>@Model.StudentFirstName @Model.StudentLastName</h3>
 
     <div class="grades-container">
-        <div class="row grade-window">
-            <div class="grade col-2">Grade one</div>
-            <div class="col-2">
-                <input class="form-control" value="@Model.GradeOne" />
+
+        <div>
+            <div class="isa_success" style="display: none">
+                <p>
+                    <i class="bi bi-check-circle"></i>
+                    Updated successfully
+                </p>
+            </div>
+            <div class="isa_failure" style="display: none">
+                <p>
+                    <i class="bi bi-exclamation-octagon-fill"></i>
+                    Something Went wrong
+                </p>
             </div>
         </div>
 
-        <div class="row grade-window">
-            <div class="grade col-2">Grade two</div>
-            <div class="col-2">
-                <input class="form-control" value="@Model.GradeTwo" />
-            </div>
-        </div>
+        <form id="update-grade" action="@Url.Action("UpdateGrade", "Teacher")">
+            <input asp-for="Id" class="input" type="hidden" name="Id" />
 
-        <div class="row grade-window">
-            <div class="grade col-2">Grade three</div>
-            <div class="col-2">
-                <input class="form-control" value="@Model.GradeThree" />
+            <div class="row grade-window">
+                <div class="grade col-2">Grade one</div>
+                <div class="col-2">
+                    <input asp-for="GradeOne" name="GradeOne" class="form-control" value="@Model.GradeOne" />
+                </div>
             </div>
-        </div>
 
-        <div class="row grade-window">
-            <div class="grade col-2">Grade four</div>
-            <div class="col-2">
-                <input class="form-control" value="@Model.GradeFour" />
+            <div class="row grade-window">
+                <div class="grade col-2">Grade two</div>
+                <div class="col-2">
+                    <input asp-for="GradeTwo" name="GradeTwo" class="form-control" value="@Model.GradeTwo" />
+                </div>
             </div>
-        </div>
 
-        <div class="row grade-window">
-            <div class="grade col-2">Grade five</div>
-            <div class="col-2">
-                <input class="form-control" value="@Model.GradeFive" />
+            <div class="row grade-window">
+                <div class="grade col-2">Grade three</div>
+                <div class="col-2">
+                    <input asp-for="GradeThree" name="GradeThree" class="form-control" value="@Model.GradeThree" />
+                </div>
             </div>
-        </div>
+
+            <div class="row grade-window">
+                <div class="grade col-2">Grade four</div>
+                <div class="col-2">
+                    <input asp-for="GradeFour" name="GradeFour" class="form-control" value="@Model.GradeFour" />
+                </div>
+            </div>
+
+            <div class="row grade-window">
+                <div class="grade col-2">Grade five</div>
+                <div class="col-2">
+                    <input asp-for="GradeFive" name="GradeFive" class="form-control" value="@Model.GradeFive" />
+                </div>
+            </div>
+
+            <div class="row grade-window">
+                <div class="col-2">
+                    <button class="btn btn-info goBackButton form-control">GRADES</button>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="updateButton btn btn-success form-control">UPDATE</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+
+    $(document).ready(function () {
+        $('.goBackButton').click(function (event) {
+            event.preventDefault();
+            document.location = '@Url.Action("Index","Teacher")';
+        });
+
+        $('.updateButton').click(function (event) {
+            event.preventDefault();
+
+            UpdateGradeForm = $("#update-grade");
+
+            var d = UpdateGradeForm.serialize();
+            var url = UpdateGradeForm.attr('action');
+
+            $.ajax({
+                type: 'PUT',
+                url: url,
+                data: d,
+                success: function (data) {
+                    if (data.success) {
+                        $(".isa_success").show();
+                        $(".isa_failure").hide();
+                    }
+                    else {
+                        $(".isa_failure").show();
+                        $(".isa_success").hide();
+                    }
+                }
+
+            });
+        });
+    });
+</script>

@@ -1,20 +1,20 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .grade {
@@ -26,6 +26,36 @@ body {
     font-weight: 500;
 }
 
-.grade-window{
+.grade-window {
     margin-top: 10px;
 }
+
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    border-radius: 50px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    width: 15rem;
+}
+
+    .isa_success > p {
+        margin: auto;
+        font-weight: 700;
+    }
+
+.isa_failure {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border-radius: 50px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    width: 15rem;
+}
+
+    .isa_failure > p {
+        margin: auto;
+        font-weight: 700;
+    }

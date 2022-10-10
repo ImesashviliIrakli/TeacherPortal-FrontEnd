@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
 using TeacherPortal_FrontEnd.Models;
 using TeacherPortal_FrontEnd.Models.GradesModels;
 using TeacherPortal_FrontEnd.Models.Teacher;
@@ -42,6 +44,29 @@ namespace TeacherPortal_FrontEnd.Repositories.TeacherRepo
             var gradeJson = await response.Content.ReadAsStringAsync();
             var grade = JsonConvert.DeserializeObject<Grades>(gradeJson);
             return grade;
+        }
+        #endregion
+
+        #region Update grade
+        public async Task<bool> UpdateGrade(Grades updatedGrade)
+        {
+            var grade = JsonConvert.SerializeObject(updatedGrade);
+
+            var uri = "https://localhost:44310/api/Teacher/update-grade";
+
+            var request = new HttpRequestMessage(HttpMethod.Put, uri);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            request.Content = new StringContent(grade, Encoding.UTF8);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;   
         }
         #endregion
     }

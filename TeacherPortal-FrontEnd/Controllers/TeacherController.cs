@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using TeacherPortal_FrontEnd.Models.Account;
+using TeacherPortal_FrontEnd.Models.GradesModels;
 using TeacherPortal_FrontEnd.Repositories.TeacherRepo;
 
 namespace TeacherPortal_FrontEnd.Controllers
@@ -33,6 +34,25 @@ namespace TeacherPortal_FrontEnd.Controllers
         {
             var grade = await _teachers.GetOneStudentGrades(id);
             return View(grade);
+        }
+        #endregion
+
+        #region Update Grade
+        [HttpPut]
+        public async Task<IActionResult> UpdateGrade(Grades updatedGrades)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            updatedGrades.TeacherUser = user.Email;
+
+            var updateGrade = await _teachers.UpdateGrade(updatedGrades);
+
+            if (!updateGrade)
+            {
+                return Json(new { success = false });
+
+            }
+            return Json(new { success = true });
         }
         #endregion
     }
