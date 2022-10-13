@@ -2,6 +2,7 @@
 
 namespace TeacherPortal_FrontEnd.Models.GradesModels
 {
+    [Serializable]
     public class Grades
     {
         [Key]

@@ -1,72 +1,80 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http.Headers;
 using System.Text;
+using TeacherPortal_FrontEnd.Data;
 using TeacherPortal_FrontEnd.Models;
 using TeacherPortal_FrontEnd.Models.GradesModels;
-using TeacherPortal_FrontEnd.Models.Teacher;
+using TeacherPortal_FrontEnd.Models.TeacherModels;
 
 namespace TeacherPortal_FrontEnd.Repositories.TeacherRepo
 {
     public class TeacherRepository : ITeacherRepository
     {
         #region Injection
-        private readonly HttpClient _httpClient;
-        public TeacherRepository(HttpClient httpClient)
+        private readonly AppDbContext _context;
+        private readonly ILogger<TeacherRepository> _logger;
+        public TeacherRepository(AppDbContext context, ILogger<TeacherRepository> logger)
         {
-            _httpClient = httpClient;
+            _context = context;
+            _logger = logger;
         }
         #endregion
 
         #region Get
-        public async Task<Teacher> GetByEmail(string email)
+        public Teacher GetByEmail(string email)
         {
-            var response = await _httpClient.GetAsync($"https://localhost:44310/api/Teacher/get-by-email/{email}");
-            var studentJson = await response.Content.ReadAsStringAsync();
-            var students = JsonConvert.DeserializeObject<Teacher>(studentJson);
-            return students;
-        }
-        #endregion
 
-        #region Get students with grades
-        public async Task<List<Grades>> GetStudentsWithGrades(string subjectName)
-        {
-            var response = await _httpClient.GetAsync($"https://localhost:44310/api/Teacher/get-student-grades/{subjectName}");
-            var gradesJson = await response.Content.ReadAsStringAsync();
-            var grades = JsonConvert.DeserializeObject<List<Grades>>(gradesJson);
-            return grades;
-        }
-        #endregion
+            string methodName = nameof(GetByEmail);
 
-        #region Get grades for single student
-        public async Task<Grades> GetOneStudentGrades(int gradeId)
-        {
-            var response = await _httpClient.GetAsync($"https://localhost:44310/api/Teacher/get-one-student-grades/{gradeId}");
-            var gradeJson = await response.Content.ReadAsStringAsync();
-            var grade = JsonConvert.DeserializeObject<Grades>(gradeJson);
-            return grade;
-        }
-        #endregion
-
-        #region Update grade
-        public async Task<bool> UpdateGrade(Grades updatedGrade)
-        {
-            var grade = JsonConvert.SerializeObject(updatedGrade);
-
-            var uri = "https://localhost:44310/api/Teacher/update-grade";
-
-            var request = new HttpRequestMessage(HttpMethod.Put, uri);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            request.Content = new StringContent(grade, Encoding.UTF8);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            var response = await _httpClient.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
+            if (string.IsNullOrEmpty(email))
             {
+                _logger.LogError($"{methodName} => Need Email to get student");
+                return null;
+            }
+
+            try
+            {
+                var teacher = _context.Teachers.FirstOrDefault(x => x.Email == email);
+                if (teacher == null)
+                {
+                    _logger.LogError($"{methodName} => Couldn't get student");
+                    return null;
+                }
+
+                return teacher;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{methodName} => Exception: {ex}");
+                return null;
+            }
+
+        }
+        #endregion
+
+        #region Add
+        public async Task<bool> Add(Teacher body)
+        {
+            string methodName = nameof(Add);
+            if (body == null)
+            {
+                _logger.LogError($"{methodName} => The model body was NULL");
+                return false;
+            }
+
+            try
+            {
+                await _context.Teachers.AddAsync(body);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"{methodName} => The teacher {body.FirstName} {body.LastName} was added successfully");
                 return true;
             }
-            return false;   
+            catch (Exception ex)
+            {
+                _logger.LogError($"{methodName} => Exception: {ex}");
+                return false;
+            }
         }
         #endregion
     }

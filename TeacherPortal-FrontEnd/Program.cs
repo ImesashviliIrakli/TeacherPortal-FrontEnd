@@ -2,21 +2,34 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TeacherPortal_FrontEnd.Data;
 using TeacherPortal_FrontEnd.Models.Account;
+using TeacherPortal_FrontEnd.Repositories.GradesRepo;
 using TeacherPortal_FrontEnd.Repositories.TeacherRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+#region DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+#endregion
+
+#region Identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI();
+#endregion
 
+#region Scopes
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<IGradesRepository, GradesRepository>();
+#endregion
 
 builder.Services.AddHttpClient();
 

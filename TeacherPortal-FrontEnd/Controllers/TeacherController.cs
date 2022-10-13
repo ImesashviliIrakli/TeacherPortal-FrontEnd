@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using TeacherPortal_FrontEnd.Models.Account;
 using TeacherPortal_FrontEnd.Models.GradesModels;
+using TeacherPortal_FrontEnd.Repositories.GradesRepo;
 using TeacherPortal_FrontEnd.Repositories.TeacherRepo;
 
 namespace TeacherPortal_FrontEnd.Controllers
@@ -13,11 +14,16 @@ namespace TeacherPortal_FrontEnd.Controllers
     {
         #region Injection
         private readonly ITeacherRepository _teachers;
+        private readonly IGradesRepository _gradesRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public TeacherController(ITeacherRepository teachers, UserManager<ApplicationUser> userManager)
+        public TeacherController(
+            ITeacherRepository teachers,
+            IGradesRepository gradesRepository,
+            UserManager<ApplicationUser> userManager)
         {
             _teachers = teachers;
+            _gradesRepository = gradesRepository;
             _userManager = userManager;
         }
         #endregion
@@ -25,14 +31,14 @@ namespace TeacherPortal_FrontEnd.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            var grades = await _teachers.GetStudentsWithGrades(user.SubjectName);
+            var grades = await _gradesRepository.GetStudentsWithGrades(user.SubjectName);
             return View(grades);
         }
 
         #region Details page 
         public async Task<IActionResult> Details(int id)
         {
-            var grade = await _teachers.GetOneStudentGrades(id);
+            var grade = await _gradesRepository.GetOneStudentGrade(id);
             return View(grade);
         }
         #endregion
@@ -45,7 +51,7 @@ namespace TeacherPortal_FrontEnd.Controllers
 
             updatedGrades.TeacherUser = user.Email;
 
-            var updateGrade = await _teachers.UpdateGrade(updatedGrades);
+            var updateGrade = await _gradesRepository.UpdateGrade(updatedGrades);
 
             if (!updateGrade)
             {

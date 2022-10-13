@@ -22,7 +22,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TeacherPortal_FrontEnd.Models.Account;
-using TeacherPortal_FrontEnd.Models.Teacher;
+using TeacherPortal_FrontEnd.Models.TeacherModels;
+using TeacherPortal_FrontEnd.Repositories.TeacherRepo;
 
 namespace TeacherPortal_FrontEnd.Areas.Identity.Pages.Account
 {
@@ -34,14 +35,14 @@ namespace TeacherPortal_FrontEnd.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly HttpClient _httpclient;
+        private readonly ITeacherRepository _teacherRepository;
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            HttpClient httpclient)
+            ITeacherRepository teacherRepository)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -49,7 +50,7 @@ namespace TeacherPortal_FrontEnd.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _httpclient = httpclient;
+            _teacherRepository = teacherRepository;
         }
 
         /// <summary>
@@ -148,18 +149,19 @@ namespace TeacherPortal_FrontEnd.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    AddTeacher student = new AddTeacher();
-                    student.FirstName = Input.FirstName;
-                    student.LastName = Input.LastName;
-                    student.Email = Input.Email;
-                    student.BirthDate = Input.BirthDate;
-                    student.SubjectName = Input.SubjectName;
+                    Teacher teacher = new Teacher();
+                    teacher.FirstName = Input.FirstName;
+                    teacher.LastName = Input.LastName;
+                    teacher.Email = Input.Email;
+                    teacher.BirthDate = Input.BirthDate;
+                    teacher.SubjectName = Input.SubjectName;
 
-                    var dataAsString = JsonSerializer.Serialize(student);
-                    var content = new StringContent(dataAsString);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    
-                    var sendTeacher = await _httpclient.PostAsync("https://localhost:44310/api/Teacher/add-new-teacher", content);
+                    var addTeacher = await _teacherRepository.Add(teacher);
+
+                    if (!addTeacher)
+                    {
+                        return BadRequest();
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
