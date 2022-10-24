@@ -20,7 +20,7 @@ namespace TeacherPortal_FrontEnd.Repositories.GradesRepo
         #region Get students with grades
         public async Task<List<Grades>> GetStudentsWithGrades(string subjectName)
         {
-            var response = await _httpClient.GetAsync($"https://localhost:44387/api/StudentApi/get-grades-one-subject/{subjectName}");
+            var response = await _httpClient.GetAsync($"https://schoolmanagement-frontend.azurewebsites.net/api/StudentApi/get-grades-one-subject/{subjectName}");
             var gradesJson = await response.Content.ReadAsStringAsync();
             var grades = JsonConvert.DeserializeObject<List<Grades>>(gradesJson);
             return grades;
@@ -28,7 +28,7 @@ namespace TeacherPortal_FrontEnd.Repositories.GradesRepo
 
         public async Task<Grades> GetOneStudentGrade(int gradeId)
         {
-            var response = await _httpClient.GetAsync($"https://localhost:44387/api/StudentApi/get-one-student-grade/{gradeId}");
+            var response = await _httpClient.GetAsync($"https://schoolmanagement-frontend.azurewebsites.net/api/StudentApi/get-one-student-grade/{gradeId}");
             var gradeJson = await response.Content.ReadAsStringAsync();
             var grade = JsonConvert.DeserializeObject<Grades>(gradeJson);
             return grade;
@@ -44,7 +44,7 @@ namespace TeacherPortal_FrontEnd.Repositories.GradesRepo
 
                 var requestContent = new StringContent(gradeJson, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PutAsync("https://localhost:44387/api/StudentApi/update-student-grade", requestContent);
+                var response = await _httpClient.PutAsync("https://schoolmanagement-frontend.azurewebsites.net/api/StudentApi/update-student-grade", requestContent);
 
                 if (response.IsSuccessStatusCode)
                 {
