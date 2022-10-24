@@ -38,18 +38,29 @@ namespace TeacherPortal_FrontEnd.Repositories.GradesRepo
         #region Update grade
         public async Task<bool> UpdateGrade(Grades updatedGrade)
         {
-            var gradeJson = JsonConvert.SerializeObject(updatedGrade);
-
-            var requestContent = new StringContent(gradeJson, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("https://localhost:44387/api/StudentApi/update-student-grade", requestContent);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
-            }
+                var gradeJson = JsonConvert.SerializeObject(updatedGrade);
 
-            return false;
+                var requestContent = new StringContent(gradeJson, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync("https://localhost:44387/api/StudentApi/update-student-grade", requestContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Updating grade was successfull");
+                    return true;
+                }
+
+                _logger.LogError("Something went wrong");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception => {ex}");
+                return false;
+            }
+            
         }
         #endregion
     }

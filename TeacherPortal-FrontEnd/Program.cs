@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Formatting.Json;
 using TeacherPortal_FrontEnd.Data;
 using TeacherPortal_FrontEnd.Models.Account;
 using TeacherPortal_FrontEnd.Repositories.GradesRepo;
@@ -18,6 +20,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+#endregion
+
+#region LoggerServices
+
+string path = @"c:\temp\logs\TeacherPortal_Logs.json";
+
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(path: "appSettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.File(new JsonFormatter(), path, shared: true)
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
 #endregion
 
 #region Identity
